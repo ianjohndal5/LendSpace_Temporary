@@ -1,0 +1,109 @@
+﻿@page
+@using LendSpace.Models
+@model LendSpace.Pages.Bookings.MyBookingsModel
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<h1>My Bookings</h1>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-body">
+                <form method="get">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" class="form-control" name="email" value="@Model.SearchEmail">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-primary form-control">Find My Bookings</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SearchEmail))
+{
+    if (Model.Bookings.Any())
+    {
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="mb-0">Your Bookings</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Facility</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var booking in Model.Bookings)
+                            {
+                                var facility = Model.Facilities.FirstOrDefault(f => f.Id == booking.FacilityId);
+                                <tr>
+                                    <td>#@booking.Id</td>
+                                    <td>@(facility?.Name ?? "Unknown")</td>
+                                    <td>@booking.BookingDate.ToShortDateString()</td>
+                                    <td>@booking.StartTime.ToString(@"hh\:mm") - @booking.EndTime.ToString(@"hh\:mm")</td>
+                                    <td>
+                                        @if (booking.Status == BookingStatus.Pending)
+                                        {
+                                            <span class="badge bg-warning text-dark">Pending</span>
+                                        }
+                                        else if (booking.Status == BookingStatus.Confirmed)
+                                        {
+                                            <span class="badge bg-success">Confirmed</span>
+                                        }
+                                        else if (booking.Status == BookingStatus.Cancelled)
+                                        {
+                                            <span class="badge bg-danger">Cancelled</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Completed</span>
+                                        }
+                                    </td>
+                                    <td>$@booking.TotalCost</td>
+                                    <td>
+                                        <a asp-page="./Details" asp-route-id="@booking.Id" class="btn btn-sm btn-outline-primary">View</a>
+                                        @if (booking.Status == BookingStatus.Pending)
+                                        {
+                                            <form method="post" asp-page-handler="Cancel" class="d-inline-block">
+                                                <input type="hidden" name="id" value="@booking.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No bookings found for this email address. Please check your email or make a new booking.
+        </div>
+    }
+}

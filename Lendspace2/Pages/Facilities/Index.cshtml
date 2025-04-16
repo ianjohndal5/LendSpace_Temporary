@@ -1,0 +1,79 @@
+﻿@page
+@model LendSpace.Pages.Facilities.IndexModel
+@{
+    ViewData["Title"] = "Facilities";
+}
+
+<h1>Available Facilities</h1>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-body">
+                <form method="get">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="date" class="form-control" name="date" value="@Model.SearchDate.ToString("yyyy-MM-dd")">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Start Time</label>
+                                <input type="time" class="form-control" name="startTime" value="@Model.SearchStartTime.ToString(@"hh\:mm")">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>End Time</label>
+                                <input type="time" class="form-control" name="endTime" value="@Model.SearchEndTime.ToString(@"hh\:mm")">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-primary form-control">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    @foreach (var facility in Model.Facilities)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card shadow h-100">
+                <img src="@facility.ImageUrl" class="card-img-top" alt="@facility.Name">
+                <div class="card-body">
+                    <h5 class="card-title">@facility.Name</h5>
+                    <p class="card-text">@facility.Description.Substring(0, Math.Min(100, facility.Description.Length))...</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-primary">@facility.Location</span>
+                        <span class="text-muted">Capacity: @facility.Capacity</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-success fw-bold">$@facility.HourlyRate/hour</span>
+                        <a asp-page="./Details" asp-route-id="@facility.Id" asp-route-date="@Model.SearchDate.ToString("yyyy-MM-dd")"
+                           asp-route-startTime="@Model.SearchStartTime.ToString(@"hh\:mm")"
+                           asp-route-endTime="@Model.SearchEndTime.ToString(@"hh\:mm")"
+                           class="btn btn-outline-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (!Model.Facilities.Any())
+{
+    <div class="alert alert-info">
+        No facilities available for the selected time period. Please try different times.
+    </div>
+}

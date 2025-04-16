@@ -1,0 +1,126 @@
+﻿
+@page
+@model LendSpace.Pages.Facilities.DetailsModel
+@{
+    ViewData["Title"] = Model.Facility.Name;
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <img src="@Model.Facility.ImageUrl" class="img-fluid rounded mb-4" alt="@Model.Facility.Name">
+
+        <h1>@Model.Facility.Name</h1>
+
+        <div class="mb-4">
+            <span class="badge bg-primary me-2">@Model.Facility.Location</span>
+            <span class="badge bg-secondary me-2">Capacity: @Model.Facility.Capacity</span>
+            <span class="badge bg-success">$@Model.Facility.HourlyRate/hour</span>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Description</h5>
+            </div>
+            <div class="card-body">
+                <p>@Model.Facility.Description</p>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Availability Calendar</h5>
+            </div>
+            <div class="card-body">
+                <!-- A simple availability display, would be enhanced with JavaScript -->
+                <div class="alert alert-info">
+                    Selected Date: <strong>@Model.SearchDate.ToShortDateString()</strong>
+                </div>
+                <div class="d-flex flex-wrap">
+                    @for (int hour = 8; hour < 22; hour++)
+                    {
+                        var timeSlot = new TimeSpan(hour, 0, 0);
+                        var isSelected = timeSlot >= Model.SearchStartTime && timeSlot < Model.SearchEndTime;
+                        var isAvailable = Model.AvailabilitySlots.ContainsKey(timeSlot) && Model.AvailabilitySlots[timeSlot];
+
+                        <div class="time-slot p-2 m-1 border @(isSelected ? "bg-primary text-white" : isAvailable ? "bg-light" : "bg-danger text-white")">
+                            @timeSlot.ToString(@"hh\:mm")
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow sticky-top" style="top: 20px;">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Book This Facility</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <input type="hidden" asp-for="Booking.FacilityId" value="@Model.Facility.Id" />
+
+                    <div class="mb-3">
+                        <label asp-for="Booking.BookingDate">Date</label>
+                        <input type="date" class="form-control" asp-for="Booking.BookingDate" value="@Model.SearchDate.ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="Booking.BookingDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Booking.StartTime">Start Time</label>
+                        <input type="time" class="form-control" asp-for="Booking.StartTime" value="@Model.SearchStartTime.ToString(@"hh\:mm")" />
+                        <span asp-validation-for="Booking.StartTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Booking.EndTime">End Time</label>
+                        <input type="time" class="form-control" asp-for="Booking.EndTime" value="@Model.SearchEndTime.ToString(@"hh\:mm")" />
+                        <span asp-validation-for="Booking.EndTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Booking.UserName">Your Name</label>
+                        <input type="text" class="form-control" asp-for="Booking.UserName" required />
+                        <span asp-validation-for="Booking.UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Booking.UserEmail">Email</label>
+                        <input type="email" class="form-control" asp-for="Booking.UserEmail" required />
+                        <span asp-validation-for="Booking.UserEmail" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Booking.AttendeeCount">Number of Attendees</label>
+                        <input type="number" class="form-control" asp-for="Booking.AttendeeCount" min="1" max="@Model.Facility.Capacity" required />
+                        <span asp-validation-for="Booking.AttendeeCount" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Booking.Purpose">Purpose</label>
+                        <textarea class="form-control" asp-for="Booking.Purpose" rows="3" required></textarea>
+                        <span asp-validation-for="Booking.Purpose" class="text-danger"></span>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <div class="d-flex justify-content-between">
+                            <span>Rate:</span>
+                            <span>$@Model.Facility.HourlyRate/hour</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Duration:</span>
+                            <span>@Model.Duration hours</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between fw-bold">
+                            <span>Total:</span>
+                            <span>$@Model.TotalCost</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Book Now</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

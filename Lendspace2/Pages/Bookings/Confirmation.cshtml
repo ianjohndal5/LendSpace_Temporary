@@ -1,0 +1,60 @@
+﻿@page
+@model LendSpace.Pages.Bookings.ConfirmationModel
+@{
+    ViewData["Title"] = "Booking Confirmation";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Booking Confirmed!</h4>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
+                    <h5 class="mt-3">Your booking has been successfully created</h5>
+                    <p class="text-muted">Booking Reference: #@Model.Booking.Id</p>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Booking Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Facility:</strong> @Model.Facility.Name</p>
+                                <p><strong>Location:</strong> @Model.Facility.Location</p>
+                                <p><strong>Date:</strong> @Model.Booking.BookingDate.ToShortDateString()</p>
+                                <p><strong>Time:</strong> @Model.Booking.StartTime.ToString(@"hh\:mm") - @Model.Booking.EndTime.ToString(@"hh\:mm")</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Booked By:</strong> @Model.Booking.UserName</p>
+                                <p><strong>Email:</strong> @Model.Booking.UserEmail</p>
+                                <p><strong>Attendees:</strong> @Model.Booking.AttendeeCount</p>
+                                <p><strong>Status:</strong> <span class="badge bg-primary">@Model.Booking.Status</span></p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <strong>Purpose:</strong>
+                            <p>@Model.Booking.Purpose</p>
+                        </div>
+                        <div class="alert alert-info">
+                            <div class="d-flex justify-content-between">
+                                <span><strong>Total:</strong></span>
+                                <span><strong>$@Model.Booking.TotalCost</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <a asp-page="/Index" class="btn btn-primary me-2">Back to Home</a>
+                    <a asp-page="/Bookings/MyBookings" class="btn btn-outline-primary">View My Bookings</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

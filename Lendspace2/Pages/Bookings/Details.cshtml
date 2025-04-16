@@ -1,0 +1,97 @@
+﻿@page
+@using LendSpace.Models
+@model LendSpace.Pages.Bookings.DetailsModel
+@{
+    ViewData["Title"] = "Booking Details";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header">
+                <h4 class="mb-0">Booking Details #@Model.Booking.Id</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Facility Information</h5>
+                        <p><strong>Name:</strong> @Model.Facility.Name</p>
+                        <p><strong>Location:</strong> @Model.Facility.Location</p>
+                        <p><strong>Capacity:</strong> @Model.Facility.Capacity persons</p>
+                        <p><strong>Rate:</strong> $@Model.Facility.HourlyRate/hour</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Booking Information</h5>
+                        <p><strong>Date:</strong> @Model.Booking.BookingDate.ToShortDateString()</p>
+                        <p><strong>Time:</strong> @Model.Booking.StartTime.ToString(@"hh\:mm") - @Model.Booking.EndTime.ToString(@"hh\:mm")</p>
+                        <p>
+                            <strong>Status:</strong>
+                            @if (Model.Booking.Status == BookingStatus.Pending)
+                            {
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            }
+                            else if (Model.Booking.Status == BookingStatus.Confirmed)
+                            {
+                                <span class="badge bg-success">Confirmed</span>
+                            }
+                            else if (Model.Booking.Status == BookingStatus.Cancelled)
+                            {
+                                <span class="badge bg-danger">Cancelled</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Completed</span>
+                            }
+                        </p>
+                        <p><strong>Created:</strong> @Model.Booking.CreatedAt.ToString("MM/dd/yyyy hh:mm tt")</p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Contact Information</h5>
+                        <p><strong>Name:</strong> @Model.Booking.UserName</p>
+                        <p><strong>Email:</strong> @Model.Booking.UserEmail</p>
+                        <p><strong>Attendees:</strong> @Model.Booking.AttendeeCount</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Purpose</h5>
+                        <p>@Model.Booking.Purpose</p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="alert alert-info">
+                    <div class="d-flex justify-content-between">
+                        <span>Rate:</span>
+                        <span>$@Model.Facility.HourlyRate/hour</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Duration:</span>
+                        <span>@Model.Duration hours</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold">
+                        <span>Total:</span>
+                        <span>$@Model.Booking.TotalCost</span>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a asp-page="/Bookings/MyBookings" asp-route-email="@Model.Booking.UserEmail" class="btn btn-primary">Back to My Bookings</a>
+
+                    @if (Model.Booking.Status == BookingStatus.Pending)
+                    {
+                        <form method="post" asp-page-handler="Cancel" class="d-inline-block">
+                            <input type="hidden" name="id" value="@Model.Booking.Id" />
+                            <button type="submit" class="btn btn-danger ms-2">Cancel Booking</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

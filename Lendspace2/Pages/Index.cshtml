@@ -1,0 +1,85 @@
+﻿@page
+@model LendSpace.Pages.IndexModel
+@{
+    ViewData["Title"] = "LendSpace - Facility Booking";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to LendSpace</h1>
+    <p class="lead">Find and book the perfect space for your needs.</p>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-body">
+                <h5 class="card-title">Find Available Facilities</h5>
+                <form method="get" asp-page="/Facilities/Index">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="date" class="form-control" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Start Time</label>
+                                <input type="time" class="form-control" name="startTime" value="09:00">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>End Time</label>
+                                <input type="time" class="form-control" name="endTime" value="17:00">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-primary form-control">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Why Choose LendSpace?</h5>
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-check-circle text-success"></i> Wide range of facilities</li>
+                    <li><i class="bi bi-check-circle text-success"></i> Easy booking process</li>
+                    <li><i class="bi bi-check-circle text-success"></i> Competitive pricing</li>
+                    <li><i class="bi bi-check-circle text-success"></i> Instant confirmation</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Featured Facilities</h5>
+                <div class="row">
+                    @foreach (var facility in Model.FeaturedFacilities)
+                    {
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <img src="@facility.ImageUrl" class="card-img-top" alt="@facility.Name">
+                                <div class="card-body">
+                                    <h6 class="card-title">@facility.Name</h6>
+                                    <a asp-page="/Facilities/Details" asp-route-id="@facility.Id" class="btn btn-sm btn-outline-primary">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
